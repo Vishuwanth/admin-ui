@@ -56,6 +56,8 @@ function App() {
 	const [rowsPerPage, setRowsPerPage] = useState(5)
 	const [page, setPage] = useState(0)
 	const [selectedAll, setSelectedAll] = useState(false)
+	const [filteredData, setFilteredData] = useState([])
+
 	// const [rowsToDisplay, setRowsToDisplay] = useState([])
 
 	const columns = [
@@ -150,7 +152,6 @@ function App() {
 	}
 
 	const handleSelectAll = (e) => {
-		console.log('select al', data)
 		const selectedAllIds = data
 			.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 			.map((each) => each.id)
@@ -172,6 +173,7 @@ function App() {
 			)
 
 			setData(formatSelectedData)
+
 			setSelectedAll(!selectedAll)
 		} else {
 			const formatSelectedData = data.map((each) => {
@@ -191,6 +193,19 @@ function App() {
 	}
 
 	const handlePagination = (e, value) => {
+		const selectedAllIds = data
+			.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+			.map((each) => each.id)
+		const formatSelectedData = data.map((each) => {
+			if (selectedAllIds.includes(each.id)) {
+				return {
+					...each,
+					isChecked: false,
+				}
+			}
+			return each
+		})
+		setData(formatSelectedData)
 		setPage(value - 1)
 		setSelected([])
 		setSelectedAll(false)
@@ -216,30 +231,32 @@ function App() {
 		setSelectedAll(false)
 	}
 
-	const searchTerm = (input) => {
-		setInput(input)
-		const filteredData = data.filter((each) => {
-			if (each.name.toLowerCase().includes(input.toLowerCase())) {
+	const searchTerm = (value) => {
+		setInput(value)
+		const filterData = data.filter((each) => {
+			if (each.name.toLowerCase().includes(value.toLowerCase())) {
 				return each
-			} else if (each.role.toLowerCase().includes(input.toLowerCase())) {
+			} else if (each.role.toLowerCase().includes(value.toLowerCase())) {
 				return each
-			} else if (each.email.toLowerCase().includes(input.toLowerCase())) {
+			} else if (each.email.toLowerCase().includes(value.toLowerCase())) {
 				return each
 			}
 		})
 
-		console.log('filteredData', filteredData)
+		console.log('filteredData', filterData)
+		setFilteredData(filterData)
 
-		setData(filteredData)
+		// setData(filteredData)
 	}
-	console.log('selected', selected)
+
+	console.log(data)
 
 	return (
 		<Container>
 			<Wrapper>
-				<SearchBar input={input} setInput={searchTerm} />
+				<SearchBar input={input} searchTerm={searchTerm} />
 				<AdminTable
-					data={data}
+					data={input ? filteredData : data}
 					columns={columns}
 					handleChecked={handleChecked}
 					handleSelectAll={handleSelectAll}

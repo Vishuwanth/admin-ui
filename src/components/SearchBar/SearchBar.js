@@ -12,13 +12,13 @@ const Search = styled.div`
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	background-color: alpha(white, 0.15);
+	background-color: #fff;
 	padding: 8px 16px;
+	flex: 1;
 
 	border: 1px solid grey;
 `
 const SearchIconWrapper = styled.div`
-	padding: theme.spacing(0, 2);
 	height: '100%';
 	position: 'absolute';
 	pointer-events: 'none';
@@ -30,17 +30,21 @@ const StyledInputBase = styled.input`
 	color: 'inherit';
 	padding: 8px 8px 8px 0;
 	width: 100%;
+	background-color: #fff;
 
 	border: none;
 	outline: none;
 `
 
-const SearchBar = () => {
+const SearchBar = ({ input, searchTerm }) => {
+	console.log('search rebderd')
 	return (
 		<Search>
 			<StyledInputBase
 				placeholder='Search…'
 				inputProps={{ 'aria-label': 'search' }}
+				onChange={(e) => searchTerm(e.target.value)}
+				value={input}
 			/>
 			<SearchIconWrapper>
 				<SearchOutlined />
