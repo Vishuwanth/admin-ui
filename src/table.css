@@ -21,9 +21,16 @@ table th {
 	text-align: center;
 }
 
+table tr {
+	background-color: #fff;
+}
+
+tr.selected {
+	background-color: #ff517130 !important;
+}
+
 table td {
 	padding: 10px;
-	background-color: #fff;
 	text-align: left;
 }
 th:first-child {
@@ -57,8 +64,8 @@ table tr:hover {
 table th {
 	padding-top: 12px;
 	padding-bottom: 12px;
-
-	background-color: #ff5171;
+	position: sticky;
+	background-color: #000000;
 	color: white;
 	text-align: left;
 }

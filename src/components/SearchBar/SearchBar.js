@@ -1,13 +1,12 @@
 import React from 'react'
 
 import styled from 'styled-components'
-import { device } from '../../deviceConstants'
 
 import { SearchOutlined } from '@material-ui/icons'
 
 const Search = styled.div`
 	border-radius: 8px;
-	min-width: 300px;
+	/* min-width: 300px; */
 	width: 100%;
 	display: flex;
 	justify-content: space-between;
@@ -15,6 +14,7 @@ const Search = styled.div`
 	background-color: #fff;
 	padding: 8px 16px;
 	flex: 1;
+	max-height: 50px;
 
 	border: 1px solid grey;
 `
@@ -37,7 +37,6 @@ const StyledInputBase = styled.input`
 `
 
 const SearchBar = ({ input, searchTerm }) => {
-	console.log('search rebderd')
 	return (
 		<Search>
 			<StyledInputBase

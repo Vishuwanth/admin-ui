@@ -9,9 +9,9 @@ import { device } from './deviceConstants'
 import AdminTable from './components/AdminTable.js'
 import CustomPagination from './components/Pagination/Pagination'
 import './table.css'
+import { CircularProgress } from '@mui/material'
 
 const Container = styled.div`
-	/* border: 1px solid red; */
 	min-height: 100vh;
 	width: 100vw;
 	padding: 0.5rem;
@@ -21,7 +21,6 @@ const Container = styled.div`
 	align-items: flex-start;
 `
 const Wrapper = styled.div`
-	/* border: 1px solid green; */
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -35,72 +34,46 @@ const Wrapper = styled.div`
 		padding: 2rem;
 	}
 `
+const LoadingContainer = styled.div`
+	border-radius: 8px;
+	min-width: 300px;
+	width: 100%;
 
-const Container1 = styled.div`
-	flex: 1;
-	background-color: red;
-`
-const Container2 = styled.div`
 	flex: 10;
-	background-color: yellow;
-`
-const Container3 = styled.div`
-	flex: 1;
-	background-color: green;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 `
 
 function App() {
 	const [data, setData] = useState([])
 	const [input, setInput] = useState('')
 	const [selected, setSelected] = useState([])
-	const [rowsPerPage, setRowsPerPage] = useState(5)
+	const rowsPerPage = 10
 	const [page, setPage] = useState(0)
 	const [selectedAll, setSelectedAll] = useState(false)
-	const [filteredData, setFilteredData] = useState([])
-
-	// const [rowsToDisplay, setRowsToDisplay] = useState([])
+	const [filteredData, setFilteredData] = useState(data)
 
 	const columns = [
 		{
 			field: 'id',
 			headerName: 'ID',
-			icons: null,
 		},
 		{
 			field: 'name',
 			headerName: 'Name',
-			icons: (
-				<i
-					style={{ marginRight: '10px', fontSize: '1.5rem' }}
-					className='fa-regular fa-user'></i>
-			),
 		},
 		{
 			field: 'email',
 			headerName: 'Email',
-			icons: (
-				<i
-					style={{ marginRight: '10px', fontSize: '1.5rem' }}
-					className='fa-solid fa-at'></i>
-			),
 		},
 		{
 			field: 'role',
 			headerName: 'Role',
-			icons: (
-				<i
-					style={{ marginRight: '10px', fontSize: '1.5rem' }}
-					className='fa-regular fa-id-badge'></i>
-			),
 		},
 		{
 			field: 'actions',
 			headerName: 'Actions',
-			icons: (
-				<i
-					style={{ marginRight: '10px', fontSize: '1.5rem' }}
-					className='fa-solid fa-user-pen'></i>
-			),
 		},
 	]
 
@@ -118,18 +91,17 @@ function App() {
 			isChecked: false,
 		}))
 		setData(formattedData)
-		// setRowsToDisplay([...formattedData.slice(page * 10, page * 10 + 10)])
+		setFilteredData(formattedData)
 	}
 
 	const handleChecked = (e, row) => {
-		console.log(e.target.checked)
 		if (e.target.checked) {
 			setSelected([...selected, row])
 		} else {
 			const filteredRows = selected.filter((each) => each.id !== row.id)
 			setSelected(filteredRows)
 		}
-		const updatedData = data.map((each) => {
+		const updatedData = filteredData.map((each) => {
 			if (each.id === row.id) {
 				return {
 					...each,
@@ -140,23 +112,16 @@ function App() {
 			return each
 		})
 
-		setData(updatedData)
-
-		// if (selected.length === rowsPerPage - 1) {
-		// 	setSelectedAll(true)
-		// } else if (selected.length === 0) {
-		// 	setSelected(false)
-		// } else {
-		// 	setSelected(null)
-		// }
+		setFilteredData(updatedData)
 	}
 
 	const handleSelectAll = (e) => {
-		const selectedAllIds = data
+		const selectedAllIds = filteredData
 			.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 			.map((each) => each.id)
+
 		if (e.target.checked) {
-			const formatSelectedData = data.map((each) => {
+			const formatSelectedData = filteredData.map((each) => {
 				if (selectedAllIds.includes(each.id)) {
 					return {
 						...each,
@@ -172,11 +137,10 @@ function App() {
 				)
 			)
 
-			setData(formatSelectedData)
-
+			setFilteredData(formatSelectedData)
 			setSelectedAll(!selectedAll)
 		} else {
-			const formatSelectedData = data.map((each) => {
+			const formatSelectedData = filteredData.map((each) => {
 				if (selectedAllIds.includes(each.id)) {
 					return {
 						...each,
@@ -187,16 +151,16 @@ function App() {
 			})
 			setSelected([])
 
-			setData(formatSelectedData)
+			setFilteredData(formatSelectedData)
 			setSelectedAll(!selectedAll)
 		}
 	}
 
 	const handlePagination = (e, value) => {
-		const selectedAllIds = data
+		const selectedAllIds = filteredData
 			.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 			.map((each) => each.id)
-		const formatSelectedData = data.map((each) => {
+		const formatSelectedData = filteredData.map((each) => {
 			if (selectedAllIds.includes(each.id)) {
 				return {
 					...each,
@@ -205,34 +169,37 @@ function App() {
 			}
 			return each
 		})
-		setData(formatSelectedData)
+		setFilteredData(formatSelectedData)
 		setPage(value - 1)
 		setSelected([])
 		setSelectedAll(false)
 	}
 
 	const handleDelete = (id) => {
-		console.log(id)
-		const updatedData = data.filter((each) => each.id !== id)
+		const updatedData = filteredData.filter((each) => each.id !== id)
 
-		setData(updatedData)
+		setFilteredData(updatedData)
 	}
 
 	const handleDeleteMany = () => {
+		setSelectedAll(false)
 		const selectedAllIds = selected.map((each) => each.id)
 
-		const updatedData = data.filter((each) => {
+		const updatedData = filteredData.filter((each) => {
 			if (!selectedAllIds.includes(each.id)) {
 				return each
 			}
+			return null
 		})
 
-		setData(updatedData)
+		setFilteredData(updatedData)
 		setSelectedAll(false)
+		setSelected([])
 	}
 
 	const searchTerm = (value) => {
 		setInput(value)
+		setSelectedAll(false)
 		const filterData = data.filter((each) => {
 			if (each.name.toLowerCase().includes(value.toLowerCase())) {
 				return each
@@ -241,38 +208,42 @@ function App() {
 			} else if (each.email.toLowerCase().includes(value.toLowerCase())) {
 				return each
 			}
+			return null
 		})
 
-		console.log('filteredData', filterData)
 		setFilteredData(filterData)
-
-		// setData(filteredData)
 	}
-
-	console.log(data)
 
 	return (
 		<Container>
 			<Wrapper>
 				<SearchBar input={input} searchTerm={searchTerm} />
-				<AdminTable
-					data={input ? filteredData : data}
-					columns={columns}
-					handleChecked={handleChecked}
-					handleSelectAll={handleSelectAll}
-					handleDelete={handleDelete}
-					rowsPerPage={rowsPerPage}
-					page={page}
-					selectedAll={selectedAll}
-					selected={selected}
-				/>
-				<CustomPagination
-					page={page}
-					count={Math.ceil(data.length / rowsPerPage)}
-					rowsPerPage={rowsPerPage}
-					handlePagination={handlePagination}
-					handleDeleteMany={handleDeleteMany}
-				/>
+				{filteredData !== [] ? (
+					<>
+						<AdminTable
+							data={filteredData}
+							columns={columns}
+							handleChecked={handleChecked}
+							handleSelectAll={handleSelectAll}
+							handleDelete={handleDelete}
+							rowsPerPage={rowsPerPage}
+							page={page}
+							selectedAll={selectedAll}
+							selected={selected}
+						/>
+						<CustomPagination
+							page={page}
+							count={Math.ceil(filteredData.length / rowsPerPage)}
+							rowsPerPage={rowsPerPage}
+							handlePagination={handlePagination}
+							handleDeleteMany={handleDeleteMany}
+						/>
+					</>
+				) : (
+					<LoadingContainer>
+						<CircularProgress />
+					</LoadingContainer>
+				)}
 			</Wrapper>
 		</Container>
 	)
