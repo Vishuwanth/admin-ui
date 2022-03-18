@@ -76,6 +76,7 @@ const AdminTable = ({
 											row={row}
 											key={row.id}
 											handleSave={props.handleSave}
+											handleCancelEdit={props.handleCancelEdit}
 										/>
 									)
 								}

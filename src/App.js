@@ -55,6 +55,8 @@ function App() {
 	const [selectedAll, setSelectedAll] = useState(false)
 	const [filteredData, setFilteredData] = useState(data)
 
+	const [loading, setLoading] = useState(true)
+
 	const columns = [
 		// {
 		// 	field: 'id',
@@ -94,6 +96,7 @@ function App() {
 		}))
 		setData(formattedData)
 		setFilteredData(formattedData)
+		setLoading(false)
 	}
 
 	const handleChecked = (e, row) => {
@@ -200,6 +203,7 @@ function App() {
 	}
 
 	const searchTerm = (value) => {
+		setLoading(true)
 		setInput(value)
 		setSelectedAll(false)
 		const filterData = data.filter((each) => {
@@ -214,6 +218,7 @@ function App() {
 		})
 
 		setFilteredData(filterData)
+		setLoading(false)
 	}
 
 	const handleEdit = (row) => {
@@ -233,8 +238,18 @@ function App() {
 	}
 
 	const handleSave = (row) => {
-		console.log('saved', row)
+		const filter = filteredData.map((each) => {
+			if (each.id === row.id) {
+				return row
+			} else {
+				return each
+			}
+		})
 
+		setFilteredData(filter)
+	}
+
+	const handleCancelEdit = (row) => {
 		const filter = filteredData.map((each) => {
 			if (each.id === row.id) {
 				return row
@@ -250,7 +265,7 @@ function App() {
 		<Container>
 			<Wrapper>
 				<SearchBar input={input} searchTerm={searchTerm} />
-				{filteredData !== [] ? (
+				{!loading ? (
 					<>
 						<AdminTable
 							data={filteredData}
@@ -264,6 +279,7 @@ function App() {
 							selected={selected}
 							handleEdit={handleEdit}
 							handleSave={handleSave}
+							handleCancelEdit={handleCancelEdit}
 						/>
 						<CustomPagination
 							page={page}
@@ -275,7 +291,7 @@ function App() {
 					</>
 				) : (
 					<LoadingContainer>
-						<CircularProgress />
+						<CircularProgress color='secondary' />
 					</LoadingContainer>
 				)}
 			</Wrapper>

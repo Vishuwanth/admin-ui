@@ -17,6 +17,13 @@ const EditForm = ({ row, ...props }) => {
 		})
 	}
 
+	const onCancel = () => {
+		props.handleCancelEdit({
+			...row,
+			isEditable: false,
+		})
+	}
+
 	return (
 		<tr key={row.id}>
 			<td align='center'>{row.id}</td>
@@ -57,7 +64,7 @@ const EditForm = ({ row, ...props }) => {
 				<div
 					style={{
 						display: 'flex',
-						justifyContent: 'center',
+						justifyContent: 'space-around',
 						alignItems: 'center',
 					}}>
 					<div onClick={onSave}>
@@ -65,16 +72,16 @@ const EditForm = ({ row, ...props }) => {
 							style={{
 								marginRight: '10px',
 								color: '#1976d2',
-								fontSize: '1rem',
+								fontSize: '20px',
 							}}
-							className='fa-solid fa-floppy-disk'></i>
+							className='fa-solid fa-check'></i>
 					</div>
-					<div onClick={() => {}}>
+					<div onClick={onCancel}>
 						<i
 							style={{
 								marginRight: '10px',
 								color: '#ff5171',
-								fontSize: '1rem',
+								fontSize: '20px',
 							}}
 							className='fa-solid fa-xmark'></i>
 					</div>
