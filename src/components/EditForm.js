@@ -67,7 +67,7 @@ const EditForm = ({ row, ...props }) => {
 						justifyContent: 'space-around',
 						alignItems: 'center',
 					}}>
-					<div onClick={onSave}>
+					<div onClick={onSave} style={{ cursor: 'pointer' }}>
 						<i
 							style={{
 								marginRight: '10px',
@@ -76,7 +76,7 @@ const EditForm = ({ row, ...props }) => {
 							}}
 							className='fa-solid fa-check'></i>
 					</div>
-					<div onClick={onCancel}>
+					<div onClick={onCancel} style={{ cursor: 'pointer' }}>
 						<i
 							style={{
 								marginRight: '10px',

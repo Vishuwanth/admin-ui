@@ -81,13 +81,7 @@ const AdminTable = ({
 									)
 								}
 								return (
-									<tr
-										key={row.id}
-										className={row.isChecked ? 'selected ' : ''}
-										onTransitionEnd={(e) => {
-											e.persist()
-											console.log('called', e.propertyName)
-										}}>
+									<tr key={row.id} className={row.isChecked ? 'selected ' : ''}>
 										<td>
 											<CustomCheckBox
 												checked={row.isChecked}
@@ -108,7 +102,9 @@ const AdminTable = ({
 													justifyContent: 'center',
 													alignItems: 'center',
 												}}>
-												<div onClick={() => props.handleEdit(row)}>
+												<div
+													style={{ cursor: 'pointer' }}
+													onClick={() => props.handleEdit(row)}>
 													<i
 														style={{
 															marginRight: '10px',
@@ -117,7 +113,9 @@ const AdminTable = ({
 														}}
 														className='fa-solid fa-pen-to-square'></i>
 												</div>
-												<div onClick={() => onDelete(row.id)}>
+												<div
+													style={{ cursor: 'pointer' }}
+													onClick={() => onDelete(row.id)}>
 													<i
 														style={{
 															marginRight: '10px',

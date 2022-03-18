@@ -1,9 +1,8 @@
 import React from 'react'
 import { Pagination } from '@mui/material'
 import styled from 'styled-components'
-import { makeStyles, useMediaQuery } from '@material-ui/core'
+import { makeStyles, Tooltip, useMediaQuery } from '@material-ui/core'
 
-import { device } from '../../deviceConstants'
 const Container = styled.div`
 	position: relative;
 	width: 100%;
@@ -19,7 +18,6 @@ const Container = styled.div`
 `
 
 const DeleteAllButton = styled.button`
-	/* small screeens */
 	background-color: #ff5171;
 	border: none;
 	color: #f6f6f6;
@@ -32,6 +30,8 @@ const DeleteAllButton = styled.button`
 	align-self: flex-start;
 	justify-self: flex-start;
 	display: flex;
+	transition: max-width 0.3s ease-out;
+	max-width: ${(props) => (props.active ? '200px' : '175px')};
 
 	@media (min-width: 479px) {
 		align-self: center;
@@ -83,14 +83,17 @@ function CustomPagination({ page, count, rowsPerPage, ...props }) {
 	const classes = useStyles()
 	return (
 		<Container>
-			<DeleteAllButton onClick={() => props.handleDeleteMany()}>
-				<DeleteIcon className='fa-solid fa-trash-can'></DeleteIcon>
-				<DeleteTypo>Delete All</DeleteTypo>
-			</DeleteAllButton>
+			<Tooltip title='Delete Selected'>
+				<DeleteAllButton
+					active={props.selected.length === rowsPerPage}
+					onClick={() => props.handleDeleteMany()}>
+					<DeleteIcon className='fa-solid fa-trash-can'></DeleteIcon>
+					<DeleteTypo>Delete Selected</DeleteTypo>
+				</DeleteAllButton>
+			</Tooltip>
 			<PaginationContainer>
 				{matches ? (
 					<Pagination
-						// color='standard'
 						classes={{ ul: classes.ul }}
 						defaultPage={1}
 						page={page + 1}
@@ -113,8 +116,6 @@ function CustomPagination({ page, count, rowsPerPage, ...props }) {
 					/>
 				)}
 			</PaginationContainer>
-
-			{/*  */}
 		</Container>
 	)
 }

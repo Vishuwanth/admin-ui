@@ -6,7 +6,6 @@ import { SearchOutlined } from '@material-ui/icons'
 
 const Search = styled.div`
 	border-radius: 8px;
-	/* min-width: 300px; */
 	width: 100%;
 	display: flex;
 	justify-content: space-between;

@@ -5,11 +5,11 @@ import SearchBar from './components/SearchBar/SearchBar'
 
 import axios from 'axios'
 
-import { device } from './deviceConstants'
-import AdminTable from './components/AdminTable.js'
+import AdminTable from './components/AdminTable.js/index.js'
 import CustomPagination from './components/Pagination/Pagination'
 import './table.css'
 import { CircularProgress } from '@mui/material'
+import { device } from './utils/deviceConstants'
 
 const Container = styled.div`
 	min-height: 100vh;
@@ -58,10 +58,6 @@ function App() {
 	const [loading, setLoading] = useState(true)
 
 	const columns = [
-		// {
-		// 	field: 'id',
-		// 	headerName: 'ID',
-		// },
 		{
 			field: 'name',
 			headerName: 'Name',
@@ -233,8 +229,6 @@ function App() {
 			return each
 		})
 		setFilteredData(updatedData)
-
-		console.log('revieved')
 	}
 
 	const handleSave = (row) => {
@@ -287,6 +281,7 @@ function App() {
 							rowsPerPage={rowsPerPage}
 							handlePagination={handlePagination}
 							handleDeleteMany={handleDeleteMany}
+							selected={selected}
 						/>
 					</>
 				) : (
