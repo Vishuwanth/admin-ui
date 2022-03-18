@@ -28,6 +28,7 @@ const Wrapper = styled.div`
 	min-height: 100vh;
 	width: 100%;
 	height: 100%;
+	padding: 0.5rem;
 
 	@media ${device.laptop} {
 		width: 80%;
@@ -55,10 +56,10 @@ function App() {
 	const [filteredData, setFilteredData] = useState(data)
 
 	const columns = [
-		{
-			field: 'id',
-			headerName: 'ID',
-		},
+		// {
+		// 	field: 'id',
+		// 	headerName: 'ID',
+		// },
 		{
 			field: 'name',
 			headerName: 'Name',
@@ -89,6 +90,7 @@ function App() {
 		const formattedData = rowData.map((each) => ({
 			...each,
 			isChecked: false,
+			isEditable: false,
 		}))
 		setData(formattedData)
 		setFilteredData(formattedData)
@@ -214,6 +216,36 @@ function App() {
 		setFilteredData(filterData)
 	}
 
+	const handleEdit = (row) => {
+		const updatedData = filteredData.map((each) => {
+			if (each.id === row.id) {
+				return {
+					...each,
+					isEditable: !each.isEditable,
+				}
+			}
+
+			return each
+		})
+		setFilteredData(updatedData)
+
+		console.log('revieved')
+	}
+
+	const handleSave = (row) => {
+		console.log('saved', row)
+
+		const filter = filteredData.map((each) => {
+			if (each.id === row.id) {
+				return row
+			} else {
+				return each
+			}
+		})
+
+		setFilteredData(filter)
+	}
+
 	return (
 		<Container>
 			<Wrapper>
@@ -230,6 +262,8 @@ function App() {
 							page={page}
 							selectedAll={selectedAll}
 							selected={selected}
+							handleEdit={handleEdit}
+							handleSave={handleSave}
 						/>
 						<CustomPagination
 							page={page}
@@ -248,5 +282,4 @@ function App() {
 		</Container>
 	)
 }
-
 export default App

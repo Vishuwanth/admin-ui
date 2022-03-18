@@ -21,12 +21,20 @@ table th {
 	text-align: center;
 }
 
+thead tr th {
+	flex: 1;
+}
+
 table tr {
 	background-color: #fff;
+	transition: all 0.3s ease-in;
+	width: 100%;
+	cursor: pointer;
 }
 
 tr.selected {
 	background-color: #ff517130 !important;
+	transform: scale(0.98);
 }
 
 table td {
@@ -59,6 +67,7 @@ td:last-child {
 
 table tr:hover {
 	background-color: #ff517130 !important;
+	transform: scale(0.98);
 }
 
 table th {
@@ -68,4 +77,24 @@ table th {
 	background-color: #000000;
 	color: white;
 	text-align: left;
+}
+
+table tr.item {
+	animation: fallAway forwards 1s ease-out 1;
+}
+
+@keyframes fallAway {
+	0% {
+		transform: rotateZ(0deg);
+		top: 0;
+		opacity: 1;
+	}
+	25% {
+		transform: rotateZ(-15deg);
+	}
+	100% {
+		top: 300px;
+		transform: rotateZ(-5deg);
+		opacity: 0;
+	}
 }

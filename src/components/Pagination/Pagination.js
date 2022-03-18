@@ -1,79 +1,120 @@
 import React from 'react'
-import { Pagination, Stack, TablePagination } from '@mui/material'
+import { Pagination } from '@mui/material'
 import styled from 'styled-components'
-import { DeleteForever, DeleteForeverOutlined } from '@material-ui/icons'
-import Chip from '@mui/material/Chip'
-import IconButton from '@material-ui/core/IconButton'
-import Delete from '@material-ui/icons/Delete'
-import { createTheme } from '@material-ui/core'
+import { makeStyles, useMediaQuery } from '@material-ui/core'
 
+import { device } from '../../deviceConstants'
 const Container = styled.div`
 	position: relative;
 	width: 100%;
-	flex: 1;
-	min-height: 50px;
 	display: flex;
-	justify-content: center;
-	align-items: center;
-	/* border: 1px solid red; */
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: flex-start;
+
+	@media (min-width: 479px) {
+		flex-direction: row;
+		align-items: center;
+	}
 `
 
 const DeleteAllButton = styled.button`
+	/* small screeens */
 	background-color: #ff5171;
-	padding: 0.5rem 1rem;
 	border: none;
-	border-radius: 0.5rem;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	margin: 1rem;
-
 	color: #f6f6f6;
 
-	position: absolute;
-	left: 0;
+	padding: 0.5rem 0.5rem;
+	border-radius: 0.5rem;
+	font-size: 12px;
+	margin-bottom: 16px;
+
+	align-self: flex-start;
+	justify-self: flex-start;
+	display: flex;
+
+	@media (min-width: 479px) {
+		align-self: center;
+		justify-self: flex-start;
+		padding: 0.5rem 1rem;
+		margin-bottom: 0;
+	}
 `
 
-const theme = createTheme({
-	components: {
-		// Name of the component
-		MuiButton: {
-			styleOverrides: {
-				// Name of the slot
-				root: {
-					// Some CSS
-					fontSize: '1rem',
-				},
-			},
+const PaginationContainer = styled.div`
+	align-self: center;
+
+	@media (min-width: 479px) {
+		justify-self: flex-start;
+	}
+`
+
+const DeleteTypo = styled.p`
+	align-self: flex-end;
+	font-size: 1rem;
+`
+
+const DeleteIcon = styled.i`
+	margin-right: 5px;
+	font-size: 1.25rem;
+`
+
+const useStyles = makeStyles((theme) => ({
+	ul: {
+		'& .MuiPaginationItem-root': {
+			backgroundColor: '#fff',
+			color: '#f50057',
+			border: '0.5px solid #f50057',
+		},
+		'& .MuiPaginationItem-root.Mui-selected': {
+			backgroundColor: '#f50057',
+			color: '#fff',
+		},
+		'& .MuiPaginationItem-root.Mui-disabled': {
+			backgroundColor: 'gray',
+			color: '#fff',
+			border: 'none',
 		},
 	},
-})
+}))
 
-const CustomPagination = ({ page, count, rowsPerPage, ...props }) => {
+function CustomPagination({ page, count, rowsPerPage, ...props }) {
+	const matches = useMediaQuery('(min-width:469px)')
+	const classes = useStyles()
 	return (
 		<Container>
 			<DeleteAllButton onClick={() => props.handleDeleteMany()}>
-				<i
-					style={{ marginRight: '10px', fontSize: '1.5rem' }}
-					className='fa-solid fa-trash-can'></i>
-				{/* <IconButton color={'secondary'}>
-					<Delete />
-				</IconButton> */}
-				<p style={{ alignSelf: 'flex-end', fontSize: '1rem' }}>Delete All</p>
+				<DeleteIcon className='fa-solid fa-trash-can'></DeleteIcon>
+				<DeleteTypo>Delete All</DeleteTypo>
 			</DeleteAllButton>
+			<PaginationContainer>
+				{matches ? (
+					<Pagination
+						// color='standard'
+						classes={{ ul: classes.ul }}
+						defaultPage={1}
+						page={page + 1}
+						count={count}
+						showFirstButton
+						showLastButton
+						onChange={(event, value) => props.handlePagination(event, value)}
+					/>
+				) : (
+					<Pagination
+						classes={{ ul: classes.ul }}
+						defaultPage={1}
+						page={page + 1}
+						count={count}
+						siblingCount={0}
+						boundaryCount={0}
+						showLastButton
+						showFirstButton
+						onChange={(event, value) => props.handlePagination(event, value)}
+					/>
+				)}
+			</PaginationContainer>
 
-			<Pagination
-				color='standard'
-				page={page + 1}
-				count={count}
-				showFirstButton
-				showLastButton
-				onChange={(event, value) => props.handlePagination(event, value)}
-				style={{}}
-			/>
-			{/* <DeleteButton>
-				<DeleteForever color='secondary' />
-			</DeleteButton> */}
+			{/*  */}
 		</Container>
 	)
 }

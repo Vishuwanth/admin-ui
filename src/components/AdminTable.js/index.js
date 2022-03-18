@@ -1,14 +1,25 @@
 import { Checkbox } from '@material-ui/core'
 import React from 'react'
 import styled from 'styled-components'
+import { withStyles } from '@material-ui/core/styles'
+import EditForm from '../EditForm'
 
 const Container = styled.div`
 	border-radius: 8px;
 	min-width: 300px;
 	width: 100%;
+	overflow: auto;
 
 	flex: 10;
 `
+
+const CustomCheckBox = withStyles({
+	root: {
+		color: '#f50057',
+	},
+	checked: {},
+	disabled: {},
+})(Checkbox)
 
 const AdminTable = ({
 	data,
@@ -18,13 +29,16 @@ const AdminTable = ({
 	selectedAll,
 	...props
 }) => {
+	const onDelete = (id) => {
+		props.handleDelete(id)
+	}
 	return (
 		<Container>
 			<table>
 				<thead>
 					<tr>
 						<th>
-							<Checkbox
+							<CustomCheckBox
 								checked={
 									selectedAll === true
 										? true
@@ -55,47 +69,67 @@ const AdminTable = ({
 					<tbody>
 						{data
 							.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-							.map((row) => (
-								<tr key={row.id} className={row.isChecked ? 'selected' : ''}>
-									<td>
-										<Checkbox
-											checked={row.isChecked}
-											onChange={(e) => props.handleChecked(e, row)}
+							.map((row) => {
+								if (row.isEditable) {
+									return (
+										<EditForm
+											row={row}
+											key={row.id}
+											handleSave={props.handleSave}
 										/>
-									</td>
-									<td align='center'>{row.id}</td>
-									<td align='center'>{row.name}</td>
-									<td align='center'>{row.email}</td>
-									<td align='center'>{row.role}</td>
-									<td align='center'>
-										<div
-											style={{
-												display: 'flex',
-												justifyContent: 'center',
-												alignItems: 'center',
-											}}>
-											<div>
-												<i
-													style={{
-														marginRight: '10px',
-														color: '#1976d2',
-														fontSize: '1rem',
-													}}
-													className='fa-solid fa-pen-to-square'></i>
+									)
+								}
+								return (
+									<tr
+										key={row.id}
+										className={row.isChecked ? 'selected ' : ''}
+										onTransitionEnd={(e) => {
+											e.persist()
+											console.log('called', e.propertyName)
+										}}>
+										<td>
+											<CustomCheckBox
+												checked={row.isChecked}
+												onChange={(e) => props.handleChecked(e, row)}
+											/>
+										</td>
+
+										<td align='center'>{row.name}</td>
+
+										<td align='center'>{row.email}</td>
+
+										<td align='center'>{row.role}</td>
+
+										<td align='center'>
+											<div
+												style={{
+													display: 'flex',
+													justifyContent: 'center',
+													alignItems: 'center',
+												}}>
+												<div onClick={() => props.handleEdit(row)}>
+													<i
+														style={{
+															marginRight: '10px',
+															color: '#1976d2',
+															fontSize: '1rem',
+														}}
+														className='fa-solid fa-pen-to-square'></i>
+												</div>
+												<div onClick={() => onDelete(row.id)}>
+													<i
+														style={{
+															marginRight: '10px',
+															color: '#ff5171',
+															fontSize: '1rem',
+														}}
+														className='fa-solid fa-trash'></i>
+												</div>
 											</div>
-											<div onClick={() => props.handleDelete(row.id)}>
-												<i
-													style={{
-														marginRight: '10px',
-														color: '#ff5171',
-														fontSize: '1rem',
-													}}
-													className='fa-solid fa-trash'></i>
-											</div>
-										</div>
-									</td>
-								</tr>
-							))}
+										</td>
+									</tr>
+								)
+							})}
 					</tbody>
 				) : (
 					<div
