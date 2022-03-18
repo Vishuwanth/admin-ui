@@ -65,7 +65,12 @@ td:last-child {
 	text-align: center;
 }
 
-table tr:hover {
+table tbody tr:hover {
+	background-color: #ff517130 !important;
+	transform: scale(0.98);
+}
+
+table tbody tr:hover {
 	background-color: #ff517130 !important;
 	transform: scale(0.98);
 }
